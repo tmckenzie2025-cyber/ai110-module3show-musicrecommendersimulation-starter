@@ -1,5 +1,6 @@
 from typing import List, Dict, Tuple, Optional
 from dataclasses import dataclass
+import csv
 
 @dataclass
 class Song:
@@ -50,18 +51,48 @@ def load_songs(csv_path: str) -> List[Dict]:
     Loads songs from a CSV file.
     Required by src/main.py
     """
-    # TODO: Implement CSV loading logic
-    print(f"Loading songs from {csv_path}...")
-    return []
+    songs = []
+    with open(csv_path, newline="") as file:
+        reader = csv.DictReader(file)
+        for row in reader:
+            row["id"] = int(row["id"])
+            row["energy"] = float(row["energy"])
+            row["tempo_bpm"] = float(row["tempo_bpm"])
+            row["valence"] = float(row["valence"])
+            row["danceability"] = float(row["danceability"])
+            row["acousticness"] = float(row["acousticness"])
+            songs.append(row)
+    return songs
 
 def score_song(user_prefs: Dict, song: Dict) -> Tuple[float, List[str]]:
     """
     Scores a single song against user preferences.
     Required by recommend_songs() and src/main.py
     """
-    # TODO: Implement scoring logic using your Algorithm Recipe from Phase 2.
-    # Expected return format: (score, reasons)
-    return []
+    score = 0.0
+    reasons = []
+
+    if song["genre"] == user_prefs["favorite_genre"]:
+        score += 1.5
+        reasons.append("genre match (+1.5)")
+    
+    if song["mood"] == user_prefs["favorite_mood"]:
+        score += 1.0
+        reasons.append("mood match (+1.0)")
+
+    gap = abs(song["energy"] - user_prefs["target_energy"])
+    energy_points = 1.5 * (1 - gap)
+    score += energy_points
+    reasons.append(f"energy fit (+{energy_points:.2f})")
+
+    if user_prefs["likes_acoustic"]:
+        acoustic_points = 0.5 * song["acousticness"]
+    else:
+        acoustic_points = 0.5 * (1 - song["acousticness"])
+    score += acoustic_points
+    reasons.append(f"acoustic fit (+{acoustic_points:.2f})")
+
+    return score, reasons
 
 def recommend_songs(user_prefs: Dict, songs: List[Dict], k: int = 5) -> List[Tuple[Dict, float, str]]:
     """
