@@ -110,14 +110,41 @@ You can add more tests in `tests/test_recommender.py`.
 ## Sample Recommendation Output
 
 Paste a sample of your recommender's output here as a text block so a reader can see what it produces:
-
 ```
-# e.g.:
-# User profile: genre=indie, mood=chill, energy=low
-# Recommendations:
-#   1. ...
-#   2. ...
-#   3. ...
+Top 5 recommendations
+========================================
+1. Sunrise City by Neon Echo
+   Score: 4.38 / 4.5
+   Reasons:
+     - genre match (+1.5)
+     - mood match (+1.0)
+     - energy fit (+1.47)
+     - acoustic fit (+0.41)
+
+2. Gym Hero by Max Pulse
+   Score: 3.28 / 4.5
+   Reasons:
+     - genre match (+1.5)
+     - energy fit (+1.30)
+
+3. Rooftop Lights by Indigo Parade
+   Score: 2.77 / 4.5
+   Reasons:
+     - mood match (+1.0)
+     - energy fit (+1.44)
+     - acoustic fit (+0.33)
+
+4. Concrete Crown by Kilo Verse
+   Score: 1.91 / 4.5
+   Reasons:
+     - energy fit (+1.47)
+     - acoustic fit (+0.44)
+
+5. Fuego Lento by Los Brillantes
+   Score: 1.85 / 4.5
+   Reasons:
+     - energy fit (+1.50)
+     - acoustic fit (+0.35)
 ```
 
 **Screenshot or video** *(optional)*: <!-- Insert a screenshot or demo video link here -->
