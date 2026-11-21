@@ -2,6 +2,11 @@ from typing import List, Dict, Tuple, Optional
 from dataclasses import dataclass
 import csv
 
+# Scoring weights (max total = 0.75 + 1.0 + 3.0 + 0.5 = 5.25)
+GENRE_WEIGHT = 0.75   # halved from 1.5
+MOOD_WEIGHT = 1.0
+ENERGY_WEIGHT = 3.0   # doubled from 1.5
+
 @dataclass
 class Song:
     """
@@ -67,15 +72,17 @@ def score_song(user_prefs: Dict, song: Dict) -> Tuple[float, List[str]]:
     reasons = []
 
     if song["genre"] == user_prefs["favorite_genre"]:
-        score += 1.5
-        reasons.append("genre match (+1.5)")
+        score += GENRE_WEIGHT
+        reasons.append(f"genre match (+{GENRE_WEIGHT})")
     
     if song["mood"] == user_prefs["favorite_mood"]:
-        score += 1.0
-        reasons.append("mood match (+1.0)")
+        score += MOOD_WEIGHT
+        reasons.append(f"mood match (+{MOOD_WEIGHT})")
 
-    gap = abs(song["energy"] - user_prefs["target_energy"])
-    energy_points = 1.5 * (1 - gap)
+    # Clamp target energy to the valid 0-1 range so scores stay within 0..5.25
+    target_energy = min(1.0, max(0.0, user_prefs["target_energy"]))
+    gap = abs(song["energy"] - target_energy)
+    energy_points = ENERGY_WEIGHT * (1 - gap)
     score += energy_points
     reasons.append(f"energy fit (+{energy_points:.2f})")
 
